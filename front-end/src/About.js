@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import Me from './me.jpg';
 import axios from 'axios'
+import loadingIcon from './loading.gif'
 
 /**
  * A React component that shows a form the user can use to create a new message, as well as a list of any pre-existing messages.
@@ -10,22 +10,41 @@ import axios from 'axios'
 const About = props => {
   const [loaded, setLoaded] = useState(false)
   const [error, setError] = useState('')
-  const [feedback, setFeedback] = useState('')
+  const [myImage, setImage] = useState('')
+  const [myText, setText] = useState('')
+
+  /**
+   * A nested function that fetches messages from the back-end server.
+   */
+  const fetchAbout = () => {
+    axios
+      .get(`${process.env.REACT_APP_SERVER_HOSTNAME}/about`)
+      .then(response => {
+        const aboutText = response.data.txt
+        const imageUrl = response.data.img
+        setText(aboutText)
+        setImage(imageUrl)
+      })
+      .catch(err => {
+        setError(err)
+      })
+      .finally(() => {
+        setLoaded(true)
+      })
+  }
 
   useEffect(() => {
-
-  }, [])
+    fetchAbout()
+  }, []) 
 
   return (
     <>
       <h1>About Me</h1>
-      <img src={Me} style={{maxHeight:"250px", width:"auto"}}/>
+      {error && <p className="MessageForm-error">{error}</p>}
+      {!loaded && <img src={loadingIcon} alt="loading" />}
+      <img src={myImage} alt='' style={{maxHeight:"250px", width:"auto"}}/>
       <p style={{ width: '35%', margin: 'auto', lineHeight: '2'}}>
-        Hello! My name is Brandon and I am currently a junior majoring in computer science. I have lived and gone to school in NYC all 
-        of my life but recently I've been wanting to explore new places and activities. Some things I enjoy doing are playing games, drawing, 
-        and swimming though I haven't been doing much of that. I also listen to a lot of music. There isn't a specific genre that I focus on 
-        so I would love some recommendations because Spotify's discover weekly isn't enough. Other than that, I am always looking to meet new
-        people and make new friends so feel free to contact me on Discord or anything else. Thats all I have for now.<br></br> Thank you!
+        {myText}
       </p>
 
     </>

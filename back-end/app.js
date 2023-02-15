@@ -78,5 +78,20 @@ app.post('/messages/save', async (req, res) => {
   }
 })
 
+app.get('/about', async (req, res) => {
+  try {
+    res.json({
+      txt: "Hello! My name is Brandon and I am currently a junior majoring in computer science. I have lived and gone to school in NYC all of my life but recently I've been wanting to explore new places and activities. Some things I enjoy doing are playing games, drawing, and swimming though I haven't been doing much of that. I also listen to a lot of music. There isn't a specific genre that I focus on so I would love some recommendations because Spotify's discover weekly isn't enough. Other than that, I am always looking to meet new people and make new friends. Thats all I have for now.<br></br> Thank you!",
+      img: 'https://drive.google.com/uc?export=view&id=1ZiSrLV36dKpciGHs77xJcKzHHNmaj6Gv',
+    })
+  } catch (err) {
+    console.error(err)
+    res.status(400).json({
+      error: err,
+      status: 'failed to retrieve about me information',
+    })
+  }
+})
+
 // export the express app we created to make it available to other modules
 module.exports = app // CommonJS export style!
